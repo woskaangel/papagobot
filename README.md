@@ -44,8 +44,8 @@
 - You must create a bot to use the [Discord API](https://support.discord.com/hc/ko/articles/212889058-Discord-%EA%B3%B5%EC%8B%9D-API). And you have to enter the information of the bot in the [.env](#env) file.
 - [Click here](https://discord.com/developers/applications) to create a [Discord Bot](https://discord.com/developers/applications).
 # env
-> `discordToken`= ***YOUR_DISCORD_BOT_TOKEN***
->
-> `clientId`= ***YOUR_DISCORD_BOT_CLIENT_ID***
->
-> `clientSecret`= ***YOUR_DISCORD_BOT_CLIENT_SECRET***
+```js
+discordToken= YOUR_DISCORD_BOT_TOKEN
+clientId= YOUR_DISCORD_BOT_CLIENT_ID
+clientSecret= YOUR_DISCORD_BOT_CLIENT_SECRET
+```
