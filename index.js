@@ -8,9 +8,9 @@ const {translate}=require('./commands/translate');
 
 if(process.env.discordToken){
     const discord=new Discord.Client();
+    const serverCount=discord.guilds.cache.size;
     discord.on('ready',()=>{
         console.log(require('colors').green(`Login in as ${discord.user.tag}`));
-        discord.user.setActivity(`${discord.guilds.cache.size}개의 서버에서 번역 중`);
     });
     discord.on('message',async msg=>{
         try{
@@ -24,5 +24,10 @@ if(process.env.discordToken){
             throw e;
         }
     });
+    setInterval(async()=>{
+        if(serverCount!==discord.guilds.cache.size){
+            await discord.user.setActivity(`${discord.guilds.cache.size}개의 서버에서 번역 중`);
+        }
+    },10000);
     discord.login(process.env.discordToken);
 }
