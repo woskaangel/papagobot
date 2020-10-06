@@ -9,7 +9,7 @@ exports.translate=async(msg,embed)=>{
         return;
     }
     let sendMsg=await msg.channel.send(embed);
-
+    // List 선언
     const iconList=['🇰🇷','🇨🇳','🇬🇧','🇯🇵','🇪🇸','🇫🇷','🇮🇹','🇷🇺','🇩🇪','🇹🇭','🇻🇳','🇮🇩'];
     const codeList=['ko','zh-CN','en','ja','es','fr','it','ru','de','th','vi','id'];
     const koreaList=['한국어','중국어','영어','일본어','스페인어','프랑스어','이탈리아어','러시아어','독일어','태국어','베트남어','인도네시아어'];
@@ -20,25 +20,21 @@ exports.translate=async(msg,embed)=>{
         throw e;
     }
     const userFilter=(user)=>{
-        return user.author.id==msg.author.id;
+        return user.author.id===msg.author.id;
     };
-    const emojiFilter=(reaction)=>{
-        return iconList.includes(reaction.emoji.name)
+    const emojiFilter=(reaction,user)=>{
+        return iconList.includes(reaction.emoji.name)&&user.id===msg.author.id;
     };
-    let translatdLanguage=1; // 번역할 언어
+    let translatdLanguage; // 번역할 언어
     let timeState=true;
-    sendMsg.awaitReactions(emojiFilter,{MAX: 1,time: 60000,errors: [`time`]}).then(collected=>{
+    await sendMsg.awaitReactions(emojiFilter,{max: 1,time: 60000,errors: [`time`]}).then(collected=>{
         const reaction=collected.first();
         for(const i in iconList){
-            if(reaction.emoji.name==iconList[i]){
-                console.log(i);
+            if(reaction.emoji.name===iconList[i]){
                 translatdLanguage=i;
-                break;
             }
         }
-        sendMsg.reactions.removeAll().catch(e=>{throw e;});
     }).catch(()=>{ // time out
-        // sendMsg.reactions.removeAll().catch(e=>{throw e;});
         embed.fields=[];
         if(msg.content==="파파고"){
             embed.setTitle(`시간초과!`);
@@ -48,7 +44,8 @@ exports.translate=async(msg,embed)=>{
         sendMsg.edit(embed);
         timeState=false;
     });
-    if(timeState==false) return;
+    sendMsg.reactions.removeAll().catch(e=>{throw e;});
+    if(timeState===false) return;
     // Translate Message Update
     embed.fields=[];
     if(msg.content==="파파고"){
@@ -71,7 +68,7 @@ exports.translate=async(msg,embed)=>{
         sendMsg.edit(embed);
         timeState=false;
     });
-    if(timeState==false) return;
+    if(timeState===false) return;
     // Translate using naver api
     const LanguageCode=await papago.DetectLanguage(receiveText);
     const TransText=await papago.Translation(LanguageCode.langCode,codeList[translatdLanguage],receiveText);
